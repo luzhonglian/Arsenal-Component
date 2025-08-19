@@ -1,0 +1,7 @@
+<template>
+  <view> 美食 </view>
+</template>
+
+<script setup></script>
+
+<style lang="scss" scoped></style>
