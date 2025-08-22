@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-button type="primary" @click="handleClick('search')">查询</el-button>
+    <el-button type="primary" @click="onClick('search')">查询</el-button>
     <template v-if="!search">
-      <el-button v-if="!noReset" @click="handleClick('reset')">重置</el-button>
-      <el-button v-if="!noAdd" @click="handleClick('add')">新增</el-button>
+      <el-button v-if="!noReset" @click="onClick('reset')">重置</el-button>
+      <el-button v-if="!noAdd" @click="onClick('add')">新增</el-button>
     </template>
   </div>
 </template>
@@ -31,7 +31,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["action"]);
 
-const handleClick = (type) => {
+const onClick = (type) => {
   // 查询、重置、新增
   emit("action", type);
 };
