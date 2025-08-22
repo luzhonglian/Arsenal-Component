@@ -117,7 +117,7 @@
  * @param {Boolean} noEdit 是否隐藏编辑按钮
  * @param {Boolean} noDelete 是否隐藏删除按钮
  * @param {Boolean} noAction 是否隐藏操作列
- * @usage <Table :columns="columns" :tableData="tableData" @rowReaction='handleRow' />
+ * @usage <Table :columns="columns" :tableData="tableData" @rowAction='onRowAction' />
  */
 import Uploader from "@/components/Uploader.vue";
 const props = defineProps({
@@ -171,9 +171,9 @@ const actionCnt = computed(() => {
 });
 //` 设置表头的操作文字居中
 
-const emit = defineEmits(["rowReaction"]);
+const emit = defineEmits(["rowAction"]);
 const onClick = (type, row) => {
-  emit("rowReaction", { type, row });
+  emit("rowAction", { type, row });
 };
 </script>
 
