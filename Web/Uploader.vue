@@ -35,10 +35,17 @@
 
 <script setup>
 /**
- * @description 上传组件,上传图片或附件
- * @description 图片：上传前是上传icon，上传后是图片缩略预览
- * @description 附件：支持pdf、word、Excel
- * @usage <Uploader v-model:fileList="formData.fileList" type="att" />
+ * 上传组件，用于上传图片或附件
+ *
+ * @description
+ * - 图片模式：上传前显示上传图标，上传后显示图片缩略预览
+ * - 附件模式：支持 PDF、Word、Excel 等文件类型
+ *
+ * @param {Array<File>} fileList 文件列表，使用 v-model:fileList 双向绑定
+ * @param {"pic"|"att"} [type="pic"] 上传类型，"pic" 为图片，"att" 为附件
+ *
+ * @usage
+ * <Uploader v-model:fileList="formData.fileList" type="att" />
  */
 const props = defineProps({
   modelValue: {
@@ -50,7 +57,7 @@ const props = defineProps({
   },
   fileList: {
     type: Array,
-    default: () => [],
+    default: () => [],/// 和el-upload的fileList属性保持一致
   },
   single: {
     type: Boolean,

@@ -13,42 +13,45 @@
         {{ item.map[row[item.prop]] }}
       </template>
       <!-- -------- 展示图片 ------------ -->
-      <template v-if="item.pic" #default="{ row }">
-        <template v-if="Array.isArray(row[item.prop])">
-          <div class="imgs">
-            <img
-              v-for="item in row[item.prop]"
-              :key="item"
-              :src="item"
-              alt=""
-              style="margin-right: 5px"
-            />
-          </div>
-        </template>
-        <img v-else :src="row[item.prop]" alt="" />
-      </template>
-      <!-- -------- 展示时间/下拉框/输入框 ------------ -->
       <template v-if="item.type" #default="{ row, $index }">
-        <FormField
-          :type="item.type"
-          :options="item.options"
-          :dateType="item.dateType"
-          :placeholder="item.placeholder"
-          :disabled="item.disabled"
-          :clearable="false"
-          :filterable="false"
-          teleported
-          v-model="item.list[$index][item.prop]"
-        />
-      </template>
-      <!-- -------- 上传 ------------ -->
-      <template v-if="item.upload" #default="{ row, $index }">
-        <Uploader
-          style="display: flex; align-items: center"
-          v-model:fileList="item.list[$index][item.prop]"
-          :type="item.uploadType"
-          :disabled="item.disabled"
-        />
+        <!-- 图片展示 -->
+        <template v-if="item.type === 'pic'">
+          <template v-if="Array.isArray(row[item.prop])">
+            <div class="imgs">
+              <img
+                v-for="src in row[item.prop]"
+                :key="src"
+                :src="src"
+                alt=""
+                style="margin-right: 5px"
+              />
+            </div>
+          </template>
+          <img v-else :src="row[item.prop]" alt="" />
+        </template>
+        <!-- 时间选择器 / 下拉框 / 输入框 -->
+        <template v-else-if="item.type !== 'upload'">
+          <FormField
+            :type="item.type"
+            :options="item.options"
+            :dateType="item.dateType"
+            :placeholder="item.placeholder"
+            :disabled="item.disabled"
+            :clearable="false"
+            :filterable="false"
+            teleported
+            v-model="item.list[$index][item.prop]"
+          />
+        </template>
+        <!-- 上传 -->
+        <template v-else>
+          <Uploader
+            style="display: flex; align-items: center"
+            v-model:fileList="item.list[$index][item.prop]"
+            :type="item.uploadType"
+            :disabled="item.disabled"
+          />
+        </template>
       </template>
     </el-table-column>
     <!-- -------- row的操作 ------------ -->
@@ -109,16 +112,33 @@
 
 <script setup>
 /**
- * @description 表格组件
- * @param {Array} columns 表格列配置 {label: 列名, prop: 列属性, width: 列宽, map: 映射, pic: 图片, type: 插槽类型, dateType: 日期类型, options: 下拉框选项}
- * @param {Array} tableData 表格数据
- * @param {Number} iconSize 图标大小
- * @param {Boolean} noDetail 是否隐藏详情按钮
- * @param {Boolean} noEdit 是否隐藏编辑按钮
- * @param {Boolean} noDelete 是否隐藏删除按钮
- * @param {Boolean} noAction 是否隐藏操作列
- * @usage <Table :columns="columns" :tableData="tableData" @rowAction='onRowAction' />
+ * 表格组件
+ *
+ * @description 用于展示数据表格，支持图片、文件上传、下拉框、输入框、日期选择等多种列类型
+ *
+ * @param {Array<Object>} columns 表格列配置
+ * @param {string} columns[].label 列名
+ * @param {string} columns[].prop 对应字段
+ * @param {number} [columns[].width] 列宽
+ * @param {Object} [columns[].map] 值映射
+ * @param {"pic"|"upload"|"select"|"input"|"picker"} [columns[].type] 列类型
+ * @param {string} [columns[].dateType] 日期类型 (仅当 type="picker" 时生效)
+ * @param {Array} [columns[].options] 下拉框选项 (仅当 type="select" 时生效)
+ *
+ * @param {Array<Object>} tableData 表格数据
+ * 每项包含：
+ *   { type: "pic" | "upload" | "select" | "input" | "picker", ... }
+ *
+ * @param {number} [iconSize=16] 图标大小
+ * @param {boolean} [noDetail=false] 是否隐藏详情按钮
+ * @param {boolean} [noEdit=false] 是否隐藏编辑按钮
+ * @param {boolean} [noDelete=false] 是否隐藏删除按钮
+ * @param {boolean} [noAction=false] 是否隐藏操作列
+ *
+ * @usage
+ * <Table :columns="columns" :tableData="tableData" @rowAction="onRowAction" />
  */
+
 import Uploader from "@/components/Uploader.vue";
 const props = defineProps({
   columns: {
