@@ -124,17 +124,24 @@
  * @param {"pic"|"upload"|"select"|"input"|"picker"} [columns[].type] 列类型
  * @param {string} [columns[].dateType] 日期类型 (仅当 type="picker" 时生效)
  * @param {Array} [columns[].options] 下拉框选项 (仅当 type="select" 时生效)
- *
+ * @param {Array<Object>} [columns[].list] 编辑或上传列的数据列表
+ *   - 使用场景：单个数据项下有相关的一类对象数组，例如一个人的所有家庭成员信息
+ *   - v-model="item.list[$index][item.prop]" 用于双向绑定，用户操作会实时更新该字段
+ *   - 注意：为保持 tableData 的原始引用不被丢失，更新数组内容时请使用
+ *     replaceArrContent(tableData, newData)
+ * function replaceArrContent(target, source = []) {
+  const arr = isRef(target) ? target.value : target;
+  if (!Array.isArray(arr)) return;
+  arr.splice(0, arr.length, ...source);
+}
  * @param {Array<Object>} tableData 表格数据
  * 每项包含：
  *   { type: "pic" | "upload" | "select" | "input" | "picker", ... }
- *
  * @param {number} [iconSize=16] 图标大小
  * @param {boolean} [noDetail=false] 是否隐藏详情按钮
  * @param {boolean} [noEdit=false] 是否隐藏编辑按钮
  * @param {boolean} [noDelete=false] 是否隐藏删除按钮
  * @param {boolean} [noAction=false] 是否隐藏操作列
- *
  * @usage
  * <Table :columns="columns" :tableData="tableData" @rowAction="onRowAction" />
  */
@@ -189,8 +196,6 @@ const actionCnt = computed(() => {
     (props.locate === true)
   );
 });
-//` 设置表头的操作文字居中
-
 const emit = defineEmits(["rowAction"]);
 const onClick = (type, row) => {
   emit("rowAction", { type, row });
